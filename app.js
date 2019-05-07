@@ -1,16 +1,6 @@
-let express = require('express');
-let app = express();
-let mysql = require('mysql');
-
-let conn = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    password : 'hermes',
-    port : 3306,
-    database : 'hermes'
-});
-
-conn.connect();
+const express = require('express');
+const app = express();
+const conn = require('./global/db.js');
 
 app.get('/data/user/all', (req, res) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
