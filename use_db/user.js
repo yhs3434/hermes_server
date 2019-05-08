@@ -19,13 +19,14 @@ router.get('/:id', (req, res) => {
 		if(!err) {
 			res_data = JSON.parse(JSON.stringify(rows));
 			res.json(res_data);
+			console.log(res_data);
 		} else {
 			console.log('Error while performing Query.', err);
 		}
 	});
 });
 
-router.post('/', (req, res) => {
+router.post('/insert', (req, res) => {
     const u_name = req.body.name;
     const u_gender = req.body.gender || 0;
     const u_age = req.body.age || 0;
