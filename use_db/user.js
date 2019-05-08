@@ -25,7 +25,7 @@ router.get('/:id', (req, res) => {
 	});
 });
 
-router.post('/', (req, res) => {
+router.post('/insert', (req, res) => {
     const u_name = req.body.name;
     const u_gender = req.body.gender || 0;
     const u_age = req.body.age || 0;
@@ -36,6 +36,7 @@ router.post('/', (req, res) => {
     let param = [u_name, u_gender, u_age];
     conn.query(query, param, (err, rows, fields) => {
         if(!err) {
+            console.log('insert success');
             res_data = JSON.parse(JSON.stringify(rows));
             res.json(res_data);
         } else {
