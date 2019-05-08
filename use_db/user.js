@@ -32,8 +32,9 @@ router.post('/', (req, res) => {
     // const u_reference_num = req.body.reference_num || 0;
     // const u_spec = req.body.spec || '';
 
-    let query = "INSERT INTO user (name, gender, age) values ("+u_name+", "+u_gender+", "+u_age+");";
-    conn.query(query, (err, rows, fields) => {
+    let query = "INSERT INTO user (name, gender, age) values (?, ?, ?);";
+    let param = [u_name, u_gender, u_age];
+    conn.query(query, param, (err, rows, fields) => {
         if(!err) {
             res_data = JSON.parse(JSON.stringify(rows));
             res.json(res_data);
