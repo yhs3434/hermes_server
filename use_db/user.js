@@ -2,6 +2,23 @@ const express = require('express');
 const router = express.Router();
 
 const conn = require('../global/db.js');
+const crypto = require('crypto');
+
+function encrypt(text, key) {
+	const cipher = crypto.createCipher('aes-256-cbc', key);
+	let encipheredContent = cipher.update(text, 'utf8', 'hex');
+	encipheredContent += cipher.final('hex');
+
+	return encipheredContent;
+}
+
+function decrypt(text, key) {
+	const decipher = crypto.createDecipher('aes-256-cbc', key);
+	let decipheredContent = decipher.update(text, 'hex', 'utf8');
+	decipheredContent += decipher.final('utf8');
+
+	return decipheredContent;
+}
 
 router.get('/all', (req, res) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
