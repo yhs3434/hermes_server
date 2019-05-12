@@ -20,11 +20,20 @@ function decrypt(text, key) {
 	return decipheredContent;
 }
 
+function get_hash(text) {
+    const shasum = crypto.createHash('sha1');
+    chasum.update(text);
+    return shasum.digest('hex');
+}
+
 router.get('/all', (req, res) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
         if(!err){
             res_data = JSON.parse(JSON.stringify(rows));
-            res_data = encrypt(res_data);
+            let e = encrypt(res_data, 'key');
+            console.log('encrypt : ' + e);
+            let d = decrypt(e, 'key');
+            console.log('decrypt : ' + d);
 			res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);
@@ -51,12 +60,29 @@ router.post('/insert', (req, res) => {
     // const u_reference_num = req.body.reference_num || 0;
     // const u_spec = req.body.spec || '';
 
+    let json_obj = {};
+    json_obj['name'] = u_name;
+    json_obj['gender'] = u_gender;
+    json_obj['age'] = u_age;
+    let json_str = JSON.stringify(json_obj);
+
     let query = "INSERT INTO user (name, gender, age) values (?, ?, ?);";
     let param = [u_name, u_gender, u_age];
     conn.query(query, param, (err, rows, fields) => {
         if(!err) {
             console.log('insert success');
-            res_data = JSON.parse(JSON.stringify(rows));
+            let res_data = JSON.parse(JSON.stringify(rows));
+
+            let data_secure = encrypt(json_str, 'temp key');
+            let hash_secure = get_hash(json_str);
+
+            let query_secure = "INSERT INTO user (id, data, hash) values ((select id from user where name=? order by id desc limit 1), ?, ?);";
+            let param_secure = [u_name, data_secure, hash_secure];
+
+            conn.query(query_secure, param_secure, (err, results) => {
+                console.log('secure insert success!');
+            })
+
             res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);
