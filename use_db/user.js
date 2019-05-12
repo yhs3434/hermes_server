@@ -23,7 +23,8 @@ function decrypt(text, key) {
 router.get('/all', (req, res) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
         if(!err){
-			res_data = JSON.parse(JSON.stringify(rows));
+            res_data = JSON.parse(JSON.stringify(rows));
+            res_data = encrypt(res_data);
 			res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);
@@ -63,7 +64,7 @@ router.post('/insert', (req, res) => {
     });
 });
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete', (req, res) => {
     const u_id = req.body.id || req.params.id;
 
     let query = "DELETE FROM user WHERE id = ?;"

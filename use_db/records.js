@@ -45,7 +45,23 @@ router.post('/insert', (req, res) => {
 		} else {
 			console.log('Error while performing Query.', err);
 		}
-	})
-})
+	});
+});
+
+router.delete('/delete', (req, res) => {
+    const r_id = req.body.id || req.params.id;
+
+    let query = "DELETE FROM records WHERE id = ?;"
+    let param = [r_id];
+    conn.query(query, param, (err, result) => {
+        if(!err) {
+            console.log('delete success');
+            res_data = JSON.parse(JSON.stringify(result));
+            res.json(res_data);
+        } else {
+            console.log('Error while performing Query.', err);
+        }
+    });
+});
 
 module.exports = router;
