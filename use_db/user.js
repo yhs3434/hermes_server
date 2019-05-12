@@ -44,9 +44,10 @@ router.get('/all', (req, res) => {
 router.get('/:id', (req, res) => {
 	conn.query('SELECT * FROM user_secure WHERE id='+req.params.id, (err, rows, fields) => {
 		if(!err) {
-			res_data = JSON.parse(JSON.stringify(rows));
-			res.json(res_data);
-			console.log(res_data);
+            res_data = JSON.parse(JSON.stringify(rows));
+            user_data = res_data[0];
+			user_data['data'] = decrypt(user_data['data'], 'temp key');
+			console.log(user_data);
 		} else {
 			console.log('Error while performing Query.', err);
 		}
