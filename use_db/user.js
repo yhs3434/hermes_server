@@ -22,7 +22,7 @@ function decrypt(text, key) {
 
 function get_hash(text) {
     const shasum = crypto.createHash('sha1');
-    chasum.update(text);
+    shasum.update(text);
     return shasum.digest('hex');
 }
 
@@ -76,11 +76,16 @@ router.post('/insert', (req, res) => {
             let data_secure = encrypt(json_str, 'temp key');
             let hash_secure = get_hash(json_str);
 
-            let query_secure = "INSERT INTO user (id, data, hash) values ((select id from user where name=? order by id desc limit 1), ?, ?);";
+            let query_secure = "INSERT INTO user_secure (id, data, hash) values ((select id from user where name=? order by id desc limit 1), ?, ?);";
             let param_secure = [u_name, data_secure, hash_secure];
 
             conn.query(query_secure, param_secure, (err, results) => {
-                console.log('secure insert success!');
+                if(!err){
+                    console.log('secure insert success!');
+                } else {
+                    console.log('secure user fail!', err);
+                }
+                
             })
 
             res.json(res_data);
