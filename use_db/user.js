@@ -47,7 +47,8 @@ router.get('/:id', (req, res) => {
             res_data = JSON.parse(JSON.stringify(rows));
             user_data = res_data[0];
 			user_data['data'] = decrypt(user_data['data'], 'temp key');
-			console.log(user_data);
+            console.log(user_data);
+            res.json(JSON.parse(user_data['data']));
 		} else {
 			console.log('Error while performing Query.', err);
 		}
