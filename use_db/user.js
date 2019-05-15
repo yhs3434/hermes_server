@@ -30,10 +30,6 @@ router.get('/all', (req, res) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
         if(!err){
             res_data = JSON.parse(JSON.stringify(rows));
-            let e = encrypt(res_data, 'key');
-            console.log('encrypt : ' + e);
-            let d = decrypt(e, 'key');
-            console.log('decrypt : ' + d);
 			res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);
