@@ -79,7 +79,7 @@ let abi = [
    }
 ];
 let user_contract = new web3.eth.Contract(abi, "0x4bab03188f1287795ff9b3902af0dfd63e49c295");
-
+let first_addr = web3.eth.accounts[0];
 
 function encrypt(text, key) {
 	const cipher = crypto.createCipher('aes-256-cbc', key);
@@ -165,7 +165,7 @@ router.post('/insert', (req, res) => {
                 console.log(results);
 
                 user_contract.methods.Input_list(insertId, hash_secure).send({
-                   from:"0x7a8d646f08e5a5489eae0526d939f302e539d7d3",
+                   from: first_addr,
                    gas:100000
                 }, (error, result) => {
                    if(!error){
