@@ -84,7 +84,22 @@ let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 
 function ether_input(id, hash){
-   let new_account = web3.eth.accounts.create();
+   let new_account = '';
+   web3.eth.getAccounts().then(e => {
+      new_account = e[0];
+      user_contract.methods.Input_list(id, hash).send({
+         from: new_account,
+         gas: 100
+      }, (err, result) => {
+         if(!err) {
+            console.log("Block ether input success!");
+            console.log(result);
+         } else {
+            console.log("error");
+            console.log(err);
+         }
+      });
+   })
    user_contract.methods.Input_list(id, hash).send({
       from: new_account['address'],
       gas: 100
