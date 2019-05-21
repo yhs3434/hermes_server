@@ -80,13 +80,23 @@ let abi = [
 ];
 
 let contract_addr = "0x4bab03188f1287795ff9b3902af0dfd63e49c295";
-let temp_contract = new web3.eth.Contract(abi);
-let user_contract = temp_contract.at(contract_addr);
+let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 
 function ether_input(id, hash){
-   web3.eth.defaultAccount = web3.eth.accounts[0];
-   user_contract.Input_list(id, hash);
+   let new_account = web3.eth.accounts.create();
+   user_contract.Input_list(id, hash).send({
+      from: new_account['address'],
+      gas: 100
+   }, (err, result) => {
+      if(!err) {
+         console.log("Block ether input success!");
+         console.log(result);
+      } else {
+         console.log("error");
+         console.log(err);
+      }
+   });
    console.log(user_contract.Show_list(id));
 }
 
