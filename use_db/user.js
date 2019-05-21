@@ -168,8 +168,13 @@ router.post('/insert', (req, res) => {
                    from:"0x7a8d646f08e5a5489eae0526d939f302e539d7d3",
                    gas:100000
                 }, (error, result) => {
-                   console.log("Contract success!");
-                   console.log(result);
+                   if(!error){
+                     console.log("Contract success!");
+                     console.log(result);
+                   } else {
+                      console.log("error");
+                      console.log(error);
+                   }
                 });
                 
             });
