@@ -80,7 +80,7 @@ let abi = [
 ];
 
 let contract_addr = "0x4bab03188f1287795ff9b3902af0dfd63e49c295";
-let temp_contract = web3.eth.contract(abi);
+let temp_contract = new web3.eth.Contract(abi);
 let user_contract = temp_contract.at(contract_addr);
 
 
