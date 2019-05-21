@@ -4,6 +4,83 @@ const router = express.Router();
 const conn = require('../global/db.js');
 const crypto = require('crypto');
 
+const Web3 = require("web3");
+let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+let abi = [
+   {
+      "constant": false,
+      "inputs": [
+         {
+            "name": "_user_id",
+            "type": "uint256"
+         },
+         {
+            "name": "_data_hash",
+            "type": "string"
+         }
+      ],
+      "name": "Input_list",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "constant": true,
+      "inputs": [
+         {
+            "name": "",
+            "type": "uint256"
+         }
+      ],
+      "name": "user_list",
+      "outputs": [
+         {
+            "name": "user_id",
+            "type": "uint256"
+         },
+         {
+            "name": "data_hash",
+            "type": "string"
+         }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "constant": true,
+      "inputs": [
+         {
+            "name": "_user_id",
+            "type": "uint256"
+         }
+      ],
+      "name": "Show_list",
+      "outputs": [
+         {
+            "name": "",
+            "type": "uint256"
+         },
+         {
+            "name": "",
+            "type": "string"
+         }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+   }
+];
+let user_contract = new web3.eth.Contract(abi, "0x4bab03188f1287795ff9b3902af0dfd63e49c295");
+
+
 function encrypt(text, key) {
 	const cipher = crypto.createCipher('aes-256-cbc', key);
 	let encipheredContent = cipher.update(text, 'utf8', 'hex');
@@ -52,9 +129,9 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/insert', (req, res) => {
-    const u_name = req.body.name;
-    const u_gender = req.body.gender || 0;
-    const u_age = req.body.age || 0;
+    const u_name = req.body.name || null;
+    const u_gender = req.body.gender || null;
+    const u_age = req.body.age || null;
     // const u_reference_num = req.body.reference_num || 0;
     // const u_spec = req.body.spec || '';
 
@@ -77,15 +154,25 @@ router.post('/insert', (req, res) => {
             let query_secure = "INSERT INTO user_secure (id, data, hash) values ((select id from user where name=? order by id desc limit 1), ?, ?);";
             let param_secure = [u_name, data_secure, hash_secure];
 
+            let insertId = res_data['insertId'];
+
             conn.query(query_secure, param_secure, (err, results) => {
                 if(!err){
                     console.log('secure insert success!');
                 } else {
                     console.log('secure user fail!', err);
                 }
-                
-            })
+                console.log(results);
 
+                user_contract.methods.Input_list(insertId, hash_secure).send({
+                   from:"0x7a8d646f08e5a5489eae0526d939f302e539d7d3",
+                   gas:100000
+                }, (error, result) => {
+                   console.log("Contract success!");
+                   console.log(result);
+                });
+                
+            });
             res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);

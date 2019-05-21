@@ -4,6 +4,10 @@ const router = express.Router();
 const conn = require('../global/db.js');
 const crypto = require('crypto');
 
+const Web3 = require("web3");
+let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+
 function encrypt(text, key) {
 	const cipher = crypto.createCipher('aes-256-cbc', key);
 	let encipheredContent = cipher.update(text, 'utf8', 'hex');
