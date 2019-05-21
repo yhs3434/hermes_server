@@ -78,8 +78,17 @@ let abi = [
       "type": "constructor"
    }
 ];
-let user_contract = new web3.eth.Contract(abi, "0x4bab03188f1287795ff9b3902af0dfd63e49c295");
-let first_addr = web3.eth.accounts[0];
+
+let contract_addr = "0x4bab03188f1287795ff9b3902af0dfd63e49c295";
+let temp_contract = web3.eth.contract(abi);
+let user_contract = temp_contract.at(contract_addr);
+
+
+function ether_input(id, hash){
+   web3.eth.defaultAccount = web3.eth.accounts[0];
+   user_contract.Input_list(id, hash);
+   console.log(user_contract.Show_list(id));
+}
 
 function encrypt(text, key) {
 	const cipher = crypto.createCipher('aes-256-cbc', key);
@@ -159,23 +168,11 @@ router.post('/insert', (req, res) => {
             conn.query(query_secure, param_secure, (err, results) => {
                 if(!err){
                     console.log('secure insert success!');
+                    ether_input(insertId, hash_secure);
                 } else {
                     console.log('secure user fail!', err);
                 }
                 console.log(results);
-
-                user_contract.methods.Input_list(insertId, hash_secure).send({
-                   from: first_addr,
-                   gas:100000
-                }, (error, result) => {
-                   if(!error){
-                     console.log("Contract success!");
-                     console.log(result);
-                   } else {
-                      console.log("error");
-                      console.log(error);
-                   }
-                });
                 
             });
             res.json(res_data);

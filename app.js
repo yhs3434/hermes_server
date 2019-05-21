@@ -14,6 +14,6 @@ app.use('/user', user);
 app.use('/hospital', hospital);
 app.use('/records', records);
 
-app.listen(3000, () => {
+app.listen(30001, () => {
     console.log('start');
 })
