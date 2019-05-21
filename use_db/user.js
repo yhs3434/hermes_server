@@ -97,7 +97,6 @@ function ether_input(id, hash){
          console.log(err);
       }
    });
-   console.log(user_contract.Show_list(id));
 }
 
 function encrypt(text, key) {
