@@ -85,7 +85,7 @@ let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 function ether_input(id, hash){
    let new_account = web3.eth.accounts.create();
-   user_contract.Input_list(id, hash).send({
+   user_contract.methods.Input_list(id, hash).send({
       from: new_account['address'],
       gas: 100
    }, (err, result) => {
