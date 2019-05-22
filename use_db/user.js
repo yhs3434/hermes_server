@@ -205,7 +205,7 @@ router.post('/insert', (req, res) => {
             let hash_secure = get_hash(json_str);
 
             let query_secure = "INSERT INTO user_secure (id, data, hash) values ((select id from user where name=? order by id desc limit 1), ?, ?);";
-            let param_secure = [u_name, data_secure, hash_secure];
+            let param_secure = [u_name, 10, hash_secure];
 
             let insertId = res_data['insertId'];
 
