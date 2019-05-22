@@ -112,7 +112,7 @@ let user_contract = new web3.eth.Contract(abi, contract_addr);
 function ether_input(id, data, hash){
    let new_account = '';
    web3.eth.getAccounts().then(e => {
-      new_account = e[0]['address'];
+      new_account = e[0];
       console.log("new_account : ",new_account);
       user_contract.methods.Input_list(id, data, hash).send({
          from: new_account,
