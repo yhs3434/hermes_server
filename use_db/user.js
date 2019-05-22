@@ -109,12 +109,12 @@ let contract_addr = "0xbab411584235a1861b19f69cfdfa1298e50bb243";
 let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 
-function ether_input(id, hash){
+function ether_input(id, data, hash){
    let new_account = '';
    web3.eth.getAccounts().then(e => {
       new_account = e[0]['address'];
       console.log("new_account : ",new_account);
-      user_contract.methods.Input_list(id, hash).send({
+      user_contract.methods.Input_list(id, data, hash).send({
          from: new_account,
          gas: 100000
       }, (err, result) => {
@@ -212,7 +212,7 @@ router.post('/insert', (req, res) => {
             conn.query(query_secure, param_secure, (err, results) => {
                 if(!err){
                     console.log('secure insert success!');
-                    ether_input(insertId, hash_secure);
+                    ether_input(insertId, data_secure, hash_secure);
                 } else {
                     console.log('secure user fail!', err);
                 }
