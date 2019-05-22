@@ -8,78 +8,104 @@ const Web3 = require("web3");
 let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 let abi = [
    {
-      "constant": false,
-      "inputs": [
-         {
-            "name": "_user_id",
-            "type": "uint256"
-         },
-         {
-            "name": "_data_hash",
-            "type": "string"
-         }
-      ],
-      "name": "Input_list",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+           "constant": false,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_hash",
+                           "type": "string"
+                   }
+           ],
+           "name": "Change_list",
+           "outputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "function"
    },
    {
-      "constant": true,
-      "inputs": [
-         {
-            "name": "",
-            "type": "uint256"
-         }
-      ],
-      "name": "user_list",
-      "outputs": [
-         {
-            "name": "user_id",
-            "type": "uint256"
-         },
-         {
-            "name": "data_hash",
-            "type": "string"
-         }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+           "constant": false,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_hash",
+                           "type": "string"
+                   }
+           ],
+           "name": "Input_list",
+           "outputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "function"
    },
    {
-      "constant": true,
-      "inputs": [
-         {
-            "name": "_user_id",
-            "type": "uint256"
-         }
-      ],
-      "name": "Show_list",
-      "outputs": [
-         {
-            "name": "",
-            "type": "uint256"
-         },
-         {
-            "name": "",
-            "type": "string"
-         }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+           "inputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "constructor"
    },
    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
+           "constant": true,
+           "inputs": [
+                   {
+                           "name": "",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "",
+                           "type": "uint256"
+                   }
+           ],
+           "name": "record_list",
+           "outputs": [
+                   {
+                           "name": "",
+                           "type": "string"
+                   }
+           ],
+           "payable": false,
+           "stateMutability": "view",
+           "type": "function"
+   },
+   {
+           "constant": true,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   }
+           ],
+           "name": "Show_list",
+           "outputs": [
+                   {
+                           "name": "",
+                           "type": "string"
+                   }
+           ],
+           "payable": false,
+           "stateMutability": "view",
+           "type": "function"
    }
 ];
 
-let contract_addr = "0x4bab03188f1287795ff9b3902af0dfd63e49c295";
+let contract_addr = "0xbab411584235a1861b19f69cfdfa1298e50bb243";
 let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 
@@ -87,9 +113,10 @@ function ether_input(id, hash){
    let new_account = '';
    web3.eth.getAccounts().then(e => {
       new_account = e[0];
+      console.log("new_account : ",new_account);
       user_contract.methods.Input_list(id, hash).send({
          from: new_account,
-         gas: 100
+         gas: 100000
       }, (err, result) => {
          if(!err) {
             console.log("Block ether input success!");
@@ -152,7 +179,11 @@ router.get('/:id', (req, res) => {
 		if(!err) {
             res_data = JSON.parse(JSON.stringify(rows));
             user_data = res_data[0];
-			user_data['data'] = decrypt(user_data['data'], 'temp key');
+            console.log("encrypt : ");
+            console.log(user_data);
+            console.log("\n\n\n");
+         user_data['data'] = decrypt(user_data['data'], 'temp key');
+            console.log("decrypt : ");
             console.log(user_data);
             res.json(JSON.parse(user_data['data']));
 		} else {
