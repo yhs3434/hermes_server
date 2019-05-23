@@ -6,6 +6,130 @@ const crypto = require('crypto');
 
 const Web3 = require("web3");
 let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+let abi = [
+   {
+           "constant": false,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_hash",
+                           "type": "string"
+                   }
+           ],
+           "name": "Change_list",
+           "outputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "function"
+   },
+   {
+           "constant": false,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_hash",
+                           "type": "string"
+                   }
+           ],
+           "name": "Input_list",
+           "outputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "function"
+   },
+   {
+           "inputs": [],
+           "payable": false,
+           "stateMutability": "nonpayable",
+           "type": "constructor"
+   },
+   {
+           "constant": true,
+           "inputs": [
+                   {
+                           "name": "",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "",
+                           "type": "uint256"
+                   }
+           ],
+           "name": "record_list",
+           "outputs": [
+                   {
+                           "name": "",
+                           "type": "string"
+                   }
+           ],
+           "payable": false,
+           "stateMutability": "view",
+           "type": "function"
+   },
+   {
+           "constant": true,
+           "inputs": [
+                   {
+                           "name": "_user_id",
+                           "type": "uint256"
+                   },
+                   {
+                           "name": "_data_num",
+                           "type": "uint256"
+                   }
+           ],
+           "name": "Show_list",
+           "outputs": [
+                   {
+                           "name": "",
+                           "type": "string"
+                   }
+           ],
+           "payable": false,
+           "stateMutability": "view",
+           "type": "function"
+   }
+];
+
+let contract_addr = "0x24cc233a30e1c4aef82082c64e2bc935de48c324";
+let user_contract = new web3.eth.Contract(abi, contract_addr);
+
+
+function ether_input(id, data, hash){
+   let new_account = '';
+   web3.eth.getAccounts().then(e => {
+      new_account = e[0];
+      console.log("new_account : ",new_account);
+      user_contract.methods.Input_list(id, data, hash).send({
+         from: new_account,
+         gas: 100000
+      }, (err, result) => {
+         if(!err) {
+            console.log("Block ether input success!");
+            console.log(result);
+         } else {
+            console.log("error");
+            console.log(err);
+         }
+      });
+   })
+
+}
+
 
 
 function encrypt(text, key) {
@@ -81,22 +205,27 @@ router.post('/insert', (req, res) => {
 			console.log('insert success');
 			let res_data = JSON.parse(JSON.stringify(rows));
 
-			let data_secure = encrypt(json_str, 'temp key');
+			let insertId = res_data['insertId'];
+
 			let hash_secure = get_hash(json_str);
+			let encrypt_key = '' + insertId + hash_secure.substring(parseInt(hash_secure.length/2), hash_secure.length);
+			console.log("encrypt_key", encrypt_key);
+			let data_secure = encrypt(json_str, encrypt_key);
 
 			let query_secure = "INSERT INTO records_secure (id, data, hash) values ((select id from records where opinion=? order by id desc limit 1), ?, ?);";
 			let param_secure = [opinion, data_secure, hash_secure];
 
+
+
 			conn.query(query_secure, param_secure, (err, results) => {
 				if(!err) {
-					console.log('secure insert success!', results);
-					res.redirect('/records/all');
+					console.log('secure insert success!');
+					ether_input(insertId, 10, hash_secure);
 				} else {
-					console.log('secure user fail!', err);
+					console.log('secure record fail!', err);
 				}
 			});
 
-			//res.json(res_data);
 		} else {
 			console.log('Error while performing Query.', err);
 		}
