@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Sign Up</title>
+    <style>
+    body{
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: url(image.jpg);
+  background-size: cover;
+}
+    </style>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="box">
+      <h2>Sign Up</h2>
+      <form action="http://133.186.209.224:30001/user/signup" method="post">
+        <div class="inputBox">
+          <input type="text" name="id" value="" required="">
+          <label>id</label>
+        </div>
+        <div class="inputBox">
+          <input type="password" name="password" value="" required="">
+          <label>Password</label>
+        </div>
+        <br>
+        <div class="inputBox">
+          <input type="text" name="name" value="" required="">
+          <label>Name</label>
+        </div>
+        <div class="inputBox">
+          <input type="text" name="gender" value="" required="">
+          <label>Gender</label>
+        </div>
+        <div class="inputBox">
+          <input type="text" name="age" value="" required="">
+          <label>Age</label>
+        </div>
+        <input style="margin-left: 120px;" type="submit" name="" value="제출">
+      </form>
+    </div>
+  </body>
+</html>

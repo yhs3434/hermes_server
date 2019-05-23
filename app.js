@@ -8,6 +8,9 @@ const async=require('async');
 const user = require('./use_db/user.js');
 const hospital = require('./use_db/hospital.js');
 const records = require('./use_db/records.js');
+const html_router = require('./router/html_router.js');
+
+app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -15,6 +18,8 @@ app.use(bodyParser.json());
 app.use('/user', user);
 app.use('/hospital', hospital);
 app.use('/records', records);
+app.use('', html_router);
+
 app.use(express.static('public'));
 app.get('/post', (req, res) => {
 	fs.readFile('post.html', (err, data) => {

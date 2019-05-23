@@ -127,7 +127,7 @@ function ether_input(id, data, hash){
          }
       });
    })
-   
+
 }
 
 function encrypt(text, key) {
@@ -217,7 +217,7 @@ router.post('/insert', (req, res) => {
                     console.log('secure user fail!', err);
                 }
                 console.log(results);
-                
+
             });
             res.json(res_data);
         } else {
@@ -241,5 +241,40 @@ router.delete('/delete', (req, res) => {
         }
     });
 });
+
+router.post('/signup', (req, res) => {
+  const login_id = req.body.id;
+  const login_password = req.body.password;
+  const user_name = req.body.name;
+  const user_gender = req.body.gender;
+  const user_age = req.body.age;
+
+  let query_user = "INSERT INTO user (name, gender, age) values (?, ?, ?);"
+  let param_user = [user_name, user_gender, user_age];
+
+  conn.query(query_user, param_user, (err, result) => {
+    if(!err){
+
+      let res_data = JSON.parse(JSON.stringify(result));
+      let insertId = res_data['insertId'];
+
+      let hash_pw = get_hash(login_password);
+
+      let query_login = "INSERT INTO user_sign (login_id, login_password, user_id) values (?, ?, ?);";
+      let param_login = [login_id, hash_pw, insertId];
+
+      conn.query(query_login, param_login, (err, result) => {
+        if(!err) {
+          console.log('sign up success');
+          res.redirect("/login");
+        } else {
+          res.status(500);
+        }
+      })
+    } else {
+      console.log("Error while performing Query.", err);
+    }
+  })
+})
 
 module.exports = router;
