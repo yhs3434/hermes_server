@@ -105,7 +105,7 @@ let abi = [
    }
 ];
 
-let contract_addr = "0xbab411584235a1861b19f69cfdfa1298e50bb243";
+let contract_addr = "0x24cc233a30e1c4aef82082c64e2bc935de48c324";
 let user_contract = new web3.eth.Contract(abi, contract_addr);
 
 

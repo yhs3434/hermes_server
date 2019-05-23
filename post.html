@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+var __name;
+var __gender;
+var __age;
+
+function input(){
+  var _name = document.getElementById("name").value;
+  var _gender = document.getElementById("gender").value;
+  var _age =  document.getElementById("age").value;
+  __name = _name;
+  __gender = _gender;
+  __age = _age;
+}
+
+$(function(){
+  $("#inputbutton").click(function(){
+    $.ajax({
+        url: "http://133.186.209.224:30001/user/insert", // 클라이언트가 요청을 보낼 서버의 URL 주소
+        data: { name: __name, gender:__gender, age:__age },                // HTTP 요청과 함께 서버로 보낼 데이터
+        type: "POST",                             // HTTP 요청 방식(GET, POST)
+        dataType: "json" ,
+        async: false,
+        fail: () => { console.log('fail'); },
+        success: (data) => {
+            console.log('success');
+            console.log(data);
+        }
+    });
+  })
+})
+</script>
+<body>
+
+
+​<input type="text" id="name"><br>
+​<input type="text" id="gender"><br>
+​<input type="text" id="age"><br>
+<button onclick="input()" id="inputbutton">입력받기</button>
+<img src ="/imgs" alt = "My Image">
+</body>
+</html>
