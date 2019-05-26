@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Selection</title>
+    <style>body{
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: sans-serif;
+        background: url(/imgs);
+        background-size: cover;
+      }
+
+      .container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .container .box{
+        position: relative;
+        width: 350px;
+        padding: 40px;
+        background-color: fade(#fff,50);
+        border: #000;
+        border-radius: 10px;
+        margin: 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: center;
+        border-radius: 10px;
+      }
+
+      .container .box:before{
+        content: '';
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .container .box .icon{
+        position: relative;
+        width: 80px;
+        height: 80px;
+        color: #fff;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        border-radius: 50%;
+        font-size: 40px;
+        font-weight: 700;
+        transition: 1s;
+      }
+
+      .container .box:nth-child(1) .icon{
+        box-shadow: 0 0 0 0 #8DA4D0;
+        background: #8DA4D0;
+      }
+
+      .container .box:nth-child(1):hover .icon{
+        box-shadow: 0 0 0 400px #8DA4D0;
+      }
+
+      .container .box:nth-child(2) .icon{
+        box-shadow: 0 0 0 0 #FFBEC3;
+        background: #FFBEC3;
+      }
+
+      .container .box:nth-child(2):hover .icon{
+        box-shadow: 0 0 0 400px #FFBEC3;
+      }
+
+      .container .box .content{
+        position: relative;
+        z-index: 1;
+        transition: 0.5s;
+      }
+
+      .container .box:hover .content{
+        color: #fff;
+      }
+
+      .container .box .content h3{
+        font-size: 20px;
+        margin: 10px 0;
+        padding: 0;
+      }
+
+      .container .box .content p{
+        margin: 0;
+        padding: 0;
+      }
+
+      a{
+        display: inline-block;
+        padding: 10px 20px;
+        background: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #000;
+        font-weight: 500;
+        margin-top: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.2);
+      }
+      </style>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="box">
+        <div class="icon"><i class="fa fa-pencil" aria-hidden="true"></i></div>
+        <div class="content">
+          <h3>Read</h3>
+          <a href="/html/patient/recordslist.html">Enter</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

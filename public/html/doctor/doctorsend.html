@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+body{
+margin: 0;
+padding: 0;
+font-family: sans-serif;
+background: url(/imgs);
+background-size: cover;
+}
+
+.box {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 400px;
+padding: 40px;
+background: rgba(0,0,0,.8);
+box-sizing: border-box;
+box-shadow: 0 15px 25px rgba(0,0,0,.5);
+border-radius: 10px;
+}
+
+.box h2 {
+margin: 0 0 30px;
+padding: 0;
+color: #fff;
+color: white;
+text-align: center;
+}
+
+.box .inputBox {
+position: relative;
+}
+
+.box .inputBox input {
+width: 100%;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+margin-bottom: 30px;
+border: none;
+border-bottom: 1px solid #fff;
+outline: none;
+background: transparent;
+text-align : center;
+}
+
+.box .inputBox label {
+position: absolute;
+top: 0;
+left: 0;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+pointer-events: none;
+transition: .5s;
+}
+
+.box .inputBox input:focus ~ label,
+.box .inputBox input:valid ~ label {
+top: -20px;
+left: 0;
+color: #03a9f4;
+font-size: 12px;
+}
+
+.box input[type="button"] {
+background: transparent;
+border: none;
+outline: none;
+color: #fff;
+background: #03a9f4;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 5px;
+margin-left: 50px;
+}
+
+.signup {
+color: white;
+}
+
+a:link {
+color: white;
+}
+a:visited {
+color: white;
+}
+a:active {
+color:white;
+}
+
+</style>
+</head>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+var _user_id
+var _hospital_id
+var _disease
+var _opinion
+var _doctor_id
+var _img
+var _contract_addr
+
+function input(){
+  _user_id = document.getElementById("user_id").value;
+  _disease =  document.getElementById("disease").value;
+  _opinion = document.getElementById("opinion").value;
+  _doctor_id = document.getElementById("doctor_id").value;
+  console.log(_disease);
+}
+
+$(function(){
+  $("#inputbutton").click(function(){
+    input();
+    $.ajax({
+        url: "http://133.186.209.224:30001/records/insert", // 클라이언트가 요청을 보낼 서버의 URL 주소
+        data: { user_id: _user_id, disease:_disease, opinion : _opinion, doctor_id : _doctor_id },                // HTTP 요청과 함께 서버로 보낼 데이터
+        type: "POST",                             // HTTP 요청 방식(GET, POST)
+        fail: () => { console.log('fail');
+        alert('insert fail !!');
+          window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
+      },
+        success: (data) => {
+            console.log('success');
+            console.log(data);
+            if (data == 'OK') {
+              alert('insert success! :)');
+              window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
+            } else {
+              alert('insert fail! T_T');
+              window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
+            }
+        }
+    });
+  })
+})
+
+</script>
+<body>
+  <div class="box">
+    <h2>Write medical references</h2>
+    <form>
+      <div class="inputBox">
+        <input type="text" id="user_id" value="" required="">
+        <label>User ID</label>
+      </div>
+      <div class="inputBox">
+        <input type="text" id="doctor_id" value="" required="">
+        <label>Doctor id</label>
+      </div>
+      <div class="inputBox">
+        <input type="text" id = "disease" value="" required="">
+        <label>Disease</label>
+      </div>
+      <div class="inputBox">
+        <input type="text" id="opinion" value="" required="">
+        <label>Opinion</label>
+      </div>
+      <input style="margin-left: 120px;" type="button" id="inputbutton" name="" value="send">
+    </form>
+  </div>
+</body>
+</html>
+
+<script>
+  var query = window.location.search.substring(1);
+  var user_id = parseInt(query.split('=')[1]);
+  var input_user_id = document.getElementById("user_id");
+  input_user_id.value = user_id;
+
+  var doctor_id = document.cookie.split('=')[1] || -1;
+  var input_doctor_id = document.getElementById('doctor_id');
+  input_doctor_id.value = doctor_id;
+</script>

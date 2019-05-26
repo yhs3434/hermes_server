@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+margin: 0;
+padding: 0;
+font-family: sans-serif;
+background: url(/imgs);
+background-size: cover;
+}
+
+.box {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 800px;
+padding: 40px;
+background: rgba(0,0,0,.8);
+box-sizing: border-box;
+box-shadow: 0 15px 25px rgba(0,0,0,.5);
+border-radius: 10px;
+}
+
+.box h2 {
+margin: 0 0 30px;
+padding: 0;
+color: #fff;
+color: white;
+text-align: center;
+}
+
+.box .inputBox {
+position: relative;
+}
+
+.box .inputBox input {
+width: 100%;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+margin-bottom: 30px;
+border: none;
+border-bottom: 1px solid #fff;
+outline: none;
+background: transparent;
+text-align : center;
+}
+
+.box .inputBox label {
+position: absolute;
+top: 0;
+left: 0;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+pointer-events: none;
+transition: .5s;
+}
+
+.box .inputBox input:focus ~ label,
+.box .inputBox input:valid ~ label {
+top: -20px;
+left: 0;
+color: #03a9f4;
+font-size: 12px;
+}
+
+.box input[type="submit"] {
+background: transparent;
+border: none;
+outline: none;
+color: #fff;
+background: #03a9f4;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 5px;
+margin-left: 50px;
+}
+
+.box input[type="button"] {
+background: transparent;
+border: none;
+outline: none;
+color: #fff;
+background: #03a9f4;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 5px;
+margin-left: 50px;
+}
+
+.signup {
+color: white;
+}
+
+a:link {
+color: white;
+}
+a:visited {
+color: white;
+}
+a:active {
+color:white;
+}
+table {
+  width: 100%;
+  border: 1px solid #444444;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #444444;
+  padding: 10px;
+}
+
+table.table-style-one {
+		font-family: verdana,arial,sans-serif;
+		font-size:11px;
+		color:#333333;
+		border-width: 1px;
+		border-color: #3A3A3A;
+		border-collapse: collapse;
+    width:50;
+    style:'word-break:break-all';
+	}
+	table.table-style-one th {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #3A3A3A;
+		background-color: #B3B3B3;
+	}
+	table.table-style-one td {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #3A3A3A;
+		background-color: #ffffff;
+	}
+
+</style>
+</head>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+
+
+$(function(){
+   $("#listButton").click(function(){
+     var query = window.location.search.substring(1);
+     var user_id = parseInt(query.split('=')[1]);
+
+      $.ajax({
+        type: 'get',
+        url: 'http://133.186.209.224:30001/records/doctor/'+user_id+'',
+        dataType : 'json',
+        fail: () => {
+          console.log('fail');
+        },
+        success: function(data){
+          var output='';
+          output +="<table class = 'table-style-one'>";
+
+          $.each(data,function(key,val){
+            var a_tag = '<a href="/html/patient/references.html?rid='+val.id+'">';
+            output +="<tr>";
+            output +="<td width=50 style='word-break:break-all'>"+a_tag+"<span>"+val.id+"</span></a></td>";
+            output +="<td width=50 style='word-break:break-all'>"+val.user_id+" "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+val.doctor_id+" "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+val.disease+"  "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+val.opinion+"  "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+val.regTime+"  "+" </td>";
+            output +="</tr>"
+          });
+          output +="</table>"
+          $("#listDiv").empty();
+          $("#listDiv").append(output);
+        }
+
+        });
+        })
+      })
+</script>
+<body>
+  <div class="box">
+    <form>
+      <input style="margin-left: 320px;" type="button" id="listButton" value="show">
+      <br>
+      <table class = 'table-style-one'>
+        <tr>
+          <th width=50 style='word-break:break-all'>num</th>
+          <th width=50 style='word-break:break-all'>user</th>
+          <th width=50 style='word-break:break-all'>doctor</th>
+          <th width=50 style='word-break:break-all'>disease</th>
+          <th width=50 style='word-break:break-all'>opinion</th>
+          <th width=50 style='word-break:break-all'>regTime</th>
+        </tr>
+      </table>
+      <div id="listDiv" style="color:white; width:100%; height:400px; overflow:auto;"></div>
+    </form>
+  </div>
+</body>
+</html>

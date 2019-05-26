@@ -4,132 +4,6 @@ const router = express.Router();
 const conn = require('../global/db.js');
 const crypto = require('crypto');
 
-const Web3 = require("web3");
-let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-let abi = [
-   {
-           "constant": false,
-           "inputs": [
-                   {
-                           "name": "_user_id",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "_data_num",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "_data_hash",
-                           "type": "string"
-                   }
-           ],
-           "name": "Change_list",
-           "outputs": [],
-           "payable": false,
-           "stateMutability": "nonpayable",
-           "type": "function"
-   },
-   {
-           "constant": false,
-           "inputs": [
-                   {
-                           "name": "_user_id",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "_data_num",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "_data_hash",
-                           "type": "string"
-                   }
-           ],
-           "name": "Input_list",
-           "outputs": [],
-           "payable": false,
-           "stateMutability": "nonpayable",
-           "type": "function"
-   },
-   {
-           "inputs": [],
-           "payable": false,
-           "stateMutability": "nonpayable",
-           "type": "constructor"
-   },
-   {
-           "constant": true,
-           "inputs": [
-                   {
-                           "name": "",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "",
-                           "type": "uint256"
-                   }
-           ],
-           "name": "record_list",
-           "outputs": [
-                   {
-                           "name": "",
-                           "type": "string"
-                   }
-           ],
-           "payable": false,
-           "stateMutability": "view",
-           "type": "function"
-   },
-   {
-           "constant": true,
-           "inputs": [
-                   {
-                           "name": "_user_id",
-                           "type": "uint256"
-                   },
-                   {
-                           "name": "_data_num",
-                           "type": "uint256"
-                   }
-           ],
-           "name": "Show_list",
-           "outputs": [
-                   {
-                           "name": "",
-                           "type": "string"
-                   }
-           ],
-           "payable": false,
-           "stateMutability": "view",
-           "type": "function"
-   }
-];
-
-let contract_addr = "0x24cc233a30e1c4aef82082c64e2bc935de48c324";
-let user_contract = new web3.eth.Contract(abi, contract_addr);
-
-
-function ether_input(id, data, hash){
-   let new_account = '';
-   web3.eth.getAccounts().then(e => {
-      new_account = e[0];
-      console.log("new_account : ",new_account);
-      user_contract.methods.Input_list(id, data, hash).send({
-         from: new_account,
-         gas: 100000
-      }, (err, result) => {
-         if(!err) {
-            console.log("Block ether input success!");
-            console.log(result);
-         } else {
-            console.log("error");
-            console.log(err);
-         }
-      });
-   })
-
-}
-
 function encrypt(text, key) {
 	const cipher = crypto.createCipher('aes-256-cbc', key);
 	let encipheredContent = cipher.update(text, 'utf8', 'hex');
@@ -164,17 +38,10 @@ router.get('/all', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-	conn.query('SELECT * FROM user_secure WHERE id='+req.params.id, (err, rows, fields) => {
+	conn.query('SELECT * FROM user WHERE id='+req.params.id, (err, rows, fields) => {
 		if(!err) {
             res_data = JSON.parse(JSON.stringify(rows));
-            user_data = res_data[0];
-            console.log("encrypt : ");
-            console.log(user_data);
-            console.log("\n\n\n");
-         user_data['data'] = decrypt(user_data['data'], 'temp key');
-            console.log("decrypt : ");
-            console.log(user_data);
-            res.json(JSON.parse(user_data['data']));
+            res.json(res_data);
 		} else {
 			console.log('Error while performing Query.', err);
 		}
@@ -212,12 +79,9 @@ router.post('/insert', (req, res) => {
             conn.query(query_secure, param_secure, (err, results) => {
                 if(!err){
                     console.log('secure insert success!');
-                    ether_input(insertId, 10, hash_secure);
                 } else {
                     console.log('secure user fail!', err);
                 }
-                console.log(results);
-
             });
             res.json(res_data);
         } else {
@@ -243,38 +107,68 @@ router.delete('/delete', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-  const login_id = req.body.id;
-  const login_password = req.body.password;
-  const user_name = req.body.name;
-  const user_gender = req.body.gender;
-  const user_age = req.body.age;
+	if(req.body.gender<0 || req.body.gender>1){
+		res.status(500).redirect("/signup");
+	}
+	else {
+		const login_id = req.body.id;
+	  const login_password = req.body.password;
+	  const user_name = req.body.name;
+	  const user_gender = req.body.gender;
+	  const user_age = req.body.age;
 
-  let query_user = "INSERT INTO user (name, gender, age) values (?, ?, ?);"
-  let param_user = [user_name, user_gender, user_age];
+	  let query_user = "INSERT INTO user (name, gender, age) values (?, ?, ?);"
+	  let param_user = [user_name, user_gender, user_age];
 
-  conn.query(query_user, param_user, (err, result) => {
-    if(!err){
+	  conn.query(query_user, param_user, (err, result) => {
+	    if(!err){
 
-      let res_data = JSON.parse(JSON.stringify(result));
-      let insertId = res_data['insertId'];
+	      let res_data = JSON.parse(JSON.stringify(result));
+	      let insertId = res_data['insertId'];
 
-      let hash_pw = get_hash(login_password);
+	      let hash_pw = get_hash(login_password);
 
-      let query_login = "INSERT INTO user_sign (login_id, login_password, user_id) values (?, ?, ?);";
-      let param_login = [login_id, hash_pw, insertId];
+	      let query_login = "INSERT INTO user_sign (login_id, login_password, user_id) values (?, ?, ?);";
+	      let param_login = [login_id, hash_pw, insertId];
 
-      conn.query(query_login, param_login, (err, result) => {
-        if(!err) {
-          console.log('sign up success');
-          res.redirect("/login");
-        } else {
-          res.status(500);
-        }
-      })
-    } else {
-      console.log("Error while performing Query.", err);
-    }
-  })
+	      conn.query(query_login, param_login, (err, result) => {
+	        if(!err) {
+	          console.log('sign up success');
+	          res.redirect("/login");
+	        } else {
+	          res.status(500);
+	        }
+	      })
+	    } else {
+	      console.log("Error while performing Query.", err);
+	    }
+	  })
+	}
+});
+
+router.post('/signin', (req, res) => {
+	const id_login = req.body.id || null;
+	const pw_login = req.body.password || null;
+	const pw_hash = get_hash(pw_login);
+
+	let query = "SELECT user_id FROM user_sign WHERE login_id=? and login_password=?;";
+	let param = [id_login, pw_hash];
+
+	conn.query(query, param, (err, result) => {
+		if(!err) {
+			result_json = JSON.parse(JSON.stringify(result));
+			if(result_json[0]==undefined){
+				console.log('debug');
+				//alert("Please reinput your id and password.");
+				res.status(500).redirect('/login');
+			} else {
+				user_id = result_json[0]['user_id'];
+				console.log(result_json[0]['user_id'], 'login');
+				res.cookie('user_id', user_id);
+				res.redirect("/select?id="+user_id);
+			}
+		}
+	})
 })
 
 module.exports = router;

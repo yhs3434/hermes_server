@@ -13,6 +13,16 @@
 }
     </style>
     <link rel="stylesheet" href="style.css">
+    <script>
+      function set_man() {
+        let input_gender = document.getElementById('input_gender');
+        input_gender.value = 1;
+      }
+      function set_woman() {
+        let input_gender = document.getElementById('input_gender');
+        input_gender.value = 2;
+      }
+    </script>
   </head>
   <body>
     <div class="box">
@@ -32,8 +42,8 @@
           <label>Name</label>
         </div>
         <div class="inputBox">
-          <input type="text" name="gender" value="" required="">
-          <label>Gender</label>
+          <input type="text" name="gender" value="" required="" id="input_gender">
+          <label>Gender  (Male:0 Female:1)</label>
         </div>
         <div class="inputBox">
           <input type="text" name="age" value="" required="">

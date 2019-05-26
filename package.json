@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "^3.0.0",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "express-generator": "^4.16.1",
     "fs": "0.0.1-security",
