@@ -2,7 +2,43 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Hermes</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script>
+  function btn(){
+     //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+     swal("환자의 병명과 소견 입력");
+   }
+  function btn1(){
+      //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+      // swal('insert success! :)');
+      let timerInterval
+      Swal.fire({
+        title: 'Saving',
+        html: 'Complete in <strong></strong> seconds.',
+        timer: 2000,
+        onBeforeOpen: () => {
+          Swal.showLoading()
+          timerInterval = setInterval(() => {
+            Swal.getContent().querySelector('strong')
+              .textContent = Swal.getTimerLeft()
+          }, 100)
+        },
+        onClose: () => {
+          clearInterval(timerInterval);
+          window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
+        }
+      }).then((result) => {
+        if (
+          // Read more about handling dismissals
+          result.dismiss === Swal.DismissReason.timer
+        ) {
+          console.log('Error')
+        }
+      })
+    }
+
+</script>
 <style>
 body{
 margin: 0;
@@ -95,9 +131,27 @@ a:active {
 color:white;
 }
 
+.root .manual {
+  display: table; margin-left: auto; margin-right: auto;
+}
+
+  button{
+  display: inline-block;
+  padding: 5px 10px;
+  background: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+  margin-top: 20px;
+  font-family: sans-serif;
+}
+
 </style>
 </head>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script>
 var _user_id
 var _hospital_id
@@ -130,10 +184,10 @@ $(function(){
             console.log('success');
             console.log(data);
             if (data == 'OK') {
-              alert('insert success! :)');
-              window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
+              btn1();
+
             } else {
-              alert('insert fail! T_T');
+              alert('Error');
               window.location.href="http://133.186.209.224:30001/html/doctor/writeread.html";
             }
         }
@@ -143,14 +197,23 @@ $(function(){
 
 </script>
 <body>
+  <div class = "root">
   <div class="box">
     <h2>Write medical references</h2>
     <form>
       <div class="inputBox">
+        <input type="text" id="user_name" value="" required="" readonly>
+        <!--<label>Patient Name</label>-->
+      </div>
+      <div class="inputBox">
+        <input type="text" value="Dankook Univ Hospital" required="" readonly>
+        <!--<label>Hospital</label>-->
+      </div>
+      <div class="inputBox" style="display: none;">
         <input type="text" id="user_id" value="" required="">
         <label>User ID</label>
       </div>
-      <div class="inputBox">
+      <div class="inputBox" style="display: none;">
         <input type="text" id="doctor_id" value="" required="">
         <label>Doctor id</label>
       </div>
@@ -165,6 +228,18 @@ $(function(){
       <input style="margin-left: 120px;" type="button" id="inputbutton" name="" value="send">
     </form>
   </div>
+  <div class="manual">
+    <button style="width: auto; height:auto; background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #03a9f4;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 0px;" onclick="javascript:btn()"> Manual </button>
+  </div>
+</div>
 </body>
 </html>
 
@@ -177,4 +252,19 @@ $(function(){
   var doctor_id = document.cookie.split('=')[1] || -1;
   var input_doctor_id = document.getElementById('doctor_id');
   input_doctor_id.value = doctor_id;
+
+  var user_name = '';
+  $.ajax({
+      url: "http://133.186.209.224:30001/user/"+user_id, // 클라이언트가 요청을 보낼 서버의 URL 주소
+      type: "GET",                             // HTTP 요청 방식(GET, POST)
+      fail: () => { console.log('fail');
+      alert('insert fail !!');
+
+    },
+      success: (data) => {
+          console.log('success');
+          user_name = data[0]['name'];
+          document.getElementById('user_name').value = user_name;
+      }
+  });
 </script>

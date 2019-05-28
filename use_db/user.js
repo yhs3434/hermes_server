@@ -26,32 +26,42 @@ function get_hash(text) {
     return shasum.digest('hex');
 }
 
-router.get('/all', (req, res) => {
+router.get('/all', (req, res, next) => {
     conn.query('SELECT * FROM user', (err, rows, fields) => {
-        if(!err){
-            res_data = JSON.parse(JSON.stringify(rows));
-			res.json(res_data);
-        } else {
-            console.log('Error while performing Query.', err);
-        }
+			try {
+	      if(!err){
+	            res_data = JSON.parse(JSON.stringify(rows));
+				res.json(res_data);
+	      } else {
+	          console.log('Error while performing Query.', err);
+	      }
+			} catch (e) {
+				next(e);
+			}
+
     });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
 	conn.query('SELECT * FROM user WHERE id='+req.params.id, (err, rows, fields) => {
-		if(!err) {
-            res_data = JSON.parse(JSON.stringify(rows));
-            res.json(res_data);
-		} else {
-			console.log('Error while performing Query.', err);
+		try {
+			if(!err) {
+	            res_data = JSON.parse(JSON.stringify(rows));
+	            res.json(res_data);
+			} else {
+				console.log('Error while performing Query.', err);
+			}
+		} catch(e) {
+			next(e);
 		}
 	});
 });
 
-router.post('/insert', (req, res) => {
+router.post('/insert', (req, res, next) => {
     const u_name = req.body.name || null;
     const u_gender = req.body.gender || null;
     const u_age = req.body.age || null;
+		const u_role = req.body.role || null;
     // const u_reference_num = req.body.reference_num || 0;
     // const u_spec = req.body.spec || '';
 
@@ -59,11 +69,15 @@ router.post('/insert', (req, res) => {
     json_obj['name'] = u_name;
     json_obj['gender'] = u_gender;
     json_obj['age'] = u_age;
+		json_obj['role'] = u_role;
     let json_str = JSON.stringify(json_obj);
 
-    let query = "INSERT INTO user (name, gender, age) values (?, ?, ?);";
-    let param = [u_name, u_gender, u_age];
+		console.log(u_role);
+
+    let query = "INSERT INTO user (name, gender, age, role) values (?, ?, ?, ?);";
+    let param = [u_name, u_gender, u_age, u_role];
     conn.query(query, param, (err, rows, fields) => {
+			try{
         if(!err) {
             console.log('insert success');
             let res_data = JSON.parse(JSON.stringify(rows));
@@ -77,25 +91,33 @@ router.post('/insert', (req, res) => {
             let insertId = res_data['insertId'];
 
             conn.query(query_secure, param_secure, (err, results) => {
+							try {
                 if(!err){
                     console.log('secure insert success!');
                 } else {
                     console.log('secure user fail!', err);
                 }
+							} catch (e) {
+								next(e);
+							}
             });
             res.json(res_data);
         } else {
             console.log('Error while performing Query.', err);
         }
+			} catch(e) {
+				next(e);
+			}
     });
 });
 
-router.delete('/delete', (req, res) => {
+router.delete('/delete', (req, res, next) => {
     const u_id = req.body.id || req.params.id;
 
     let query = "DELETE FROM user WHERE id = ?;"
     let param = [u_id];
     conn.query(query, param, (err, result) => {
+			try {
         if(!err) {
             console.log('delete success');
             res_data = JSON.parse(JSON.stringify(result));
@@ -103,11 +125,17 @@ router.delete('/delete', (req, res) => {
         } else {
             console.log('Error while performing Query.', err);
         }
+			} catch (e) {
+				next(e);
+			}
     });
 });
 
-router.post('/signup', (req, res) => {
+router.post('/signup', (req, res, next) => {
 	if(req.body.gender<0 || req.body.gender>1){
+		res.status(500).redirect("/signup");
+	}
+	else if(req.body.role<0 || req.body.role>1) {
 		res.status(500).redirect("/signup");
 	}
 	else {
@@ -116,37 +144,46 @@ router.post('/signup', (req, res) => {
 	  const user_name = req.body.name;
 	  const user_gender = req.body.gender;
 	  const user_age = req.body.age;
+		const user_role = req.body.role;
 
-	  let query_user = "INSERT INTO user (name, gender, age) values (?, ?, ?);"
-	  let param_user = [user_name, user_gender, user_age];
+	  let query_user = "INSERT INTO user (name, gender, age, role) values (?, ?, ?, ?);"
+	  let param_user = [user_name, user_gender, user_age, user_role];
 
 	  conn.query(query_user, param_user, (err, result) => {
-	    if(!err){
+			try {
+		    if(!err){
 
-	      let res_data = JSON.parse(JSON.stringify(result));
-	      let insertId = res_data['insertId'];
+		      let res_data = JSON.parse(JSON.stringify(result));
+		      let insertId = res_data['insertId'];
 
-	      let hash_pw = get_hash(login_password);
+		      let hash_pw = get_hash(login_password);
 
-	      let query_login = "INSERT INTO user_sign (login_id, login_password, user_id) values (?, ?, ?);";
-	      let param_login = [login_id, hash_pw, insertId];
+		      let query_login = "INSERT INTO user_sign (login_id, login_password, user_id) values (?, ?, ?);";
+		      let param_login = [login_id, hash_pw, insertId];
 
-	      conn.query(query_login, param_login, (err, result) => {
-	        if(!err) {
-	          console.log('sign up success');
-	          res.redirect("/login");
-	        } else {
-	          res.status(500);
-	        }
-	      })
-	    } else {
-	      console.log("Error while performing Query.", err);
-	    }
+		      conn.query(query_login, param_login, (err, result) => {
+						try {
+			        if(!err) {
+			          console.log('sign up success');
+			          res.redirect("/login");
+			        } else {
+			          res.status(500);
+			        }
+						} catch (e) {
+							next(e);
+						}
+		      })
+		    } else {
+		      console.log("Error while performing Query.", err);
+		    }
+			} catch (e) {
+				next(e);
+			}
 	  })
 	}
 });
 
-router.post('/signin', (req, res) => {
+router.post('/signin', (req, res, next) => {
 	const id_login = req.body.id || null;
 	const pw_login = req.body.password || null;
 	const pw_hash = get_hash(pw_login);
@@ -155,18 +192,24 @@ router.post('/signin', (req, res) => {
 	let param = [id_login, pw_hash];
 
 	conn.query(query, param, (err, result) => {
-		if(!err) {
-			result_json = JSON.parse(JSON.stringify(result));
-			if(result_json[0]==undefined){
-				console.log('debug');
-				//alert("Please reinput your id and password.");
-				res.status(500).redirect('/login');
+		try {
+			if(!err) {
+				result_json = JSON.parse(JSON.stringify(result));
+				if(result_json[0]==undefined){
+					console.log('debug');
+					//alert("Please reinput your id and password.");
+					res.status(500).redirect('/login');
+				} else {
+					user_id = result_json[0]['user_id'];
+					console.log(result_json[0]['user_id'], 'login');
+					res.cookie('user_id', user_id);
+					res.redirect("/select?id="+user_id);
+				}
 			} else {
-				user_id = result_json[0]['user_id'];
-				console.log(result_json[0]['user_id'], 'login');
-				res.cookie('user_id', user_id);
-				res.redirect("/select?id="+user_id);
+				next(err);
 			}
+		} catch (e) {
+			next(e);
 		}
 	})
 })

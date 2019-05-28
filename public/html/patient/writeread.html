@@ -2,7 +2,14 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Selection</title>
+    <title>Hermes</title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+      function btn(){
+         //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+         swal("show : 소견서 출력");
+       }
+    </script>
     <style>body{
         margin: 0;
         padding: 0;
@@ -112,18 +119,50 @@
         margin-top: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,.2);
       }
+
+      .manual {
+        width: 80px;
+        margin: 0 auto;
+      }
+
+        button{
+        display: inline-block;
+        padding: 5px 10px;
+        background: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #000;
+        font-weight: 500;
+        margin-top: 20px;
+        font-family: sans-serif;
+      }
+
       </style>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
+    <div class = "root">
     <div class="container">
+
       <div class="box">
         <div class="icon"><i class="fa fa-pencil" aria-hidden="true"></i></div>
         <div class="content">
-          <h3>Read</h3>
+          <h3>References</h3><h3>Show</h3>
           <a href="/html/patient/recordslist.html">Enter</a>
         </div>
       </div>
     </div>
+    <div class="manual">
+      <button style="width: auto; height:auto; background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      background: #03a9f4;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-left: 0px;" onclick="javascript:btn()"> Manual </button>
+    </div>
+  </div>
   </body>
 </html>

@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Sign Up</title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
     body{
   margin: 0;
@@ -14,6 +15,10 @@
     </style>
     <link rel="stylesheet" href="style.css">
     <script>
+    function btn(){
+       //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+       //swal("success");
+     }
       function set_man() {
         let input_gender = document.getElementById('input_gender');
         input_gender.value = 1;
@@ -49,7 +54,11 @@
           <input type="text" name="age" value="" required="">
           <label>Age</label>
         </div>
-        <input style="margin-left: 120px;" type="submit" name="" value="제출">
+        <div class="inputBox">
+          <input type="text" name="role" value="" required="" id="input_role">
+          <label>Doctor/Patient  (Doctor:0 Patient:1)</label>
+        </div>
+        <input style="margin-left: 120px;" type="submit" onclick ="btn()" name="" value="Submit">
       </form>
     </div>
   </body>

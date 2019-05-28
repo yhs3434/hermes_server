@@ -51,6 +51,12 @@ app.get('/imgs', (req, res) => {
 	});
 });
 
+
+app.use(function(error, req, res, next) {
+  // 여기에 도달할 것입니다
+  res.json({ message: error.message });
+});
+
 app.listen(30001, () => {
     console.log('start');
 })

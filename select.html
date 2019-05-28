@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <meta charset="utf-8">
-    <title>Selection</title>
+    <title>Hermes</title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+      function btn(){
+         //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+         swal("doctor : user, doctor 권한 모두 사용 가능\n patient : doctor 권한은 사용 불가 \n ");
+       }
+    </script>
     <style>body{
         margin: 0;
         padding: 0;
@@ -14,13 +22,13 @@
         background: url(/imgs);
         background-size: cover;
       }
-      
+
       .container{
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
       }
-      
+
       .container .box{
         position: relative;
         width: 350px;
@@ -34,7 +42,7 @@
         text-align: center;
         border-radius: 10px;
       }
-      
+
       .container .box:before{
         content: '';
         width: 50%;
@@ -45,7 +53,7 @@
         z-index: 2;
         pointer-events: none;
       }
-      
+
       .container .box .icon{
         position: relative;
         width: 80px;
@@ -61,46 +69,46 @@
         font-weight: 700;
         transition: 1s;
       }
-      
+
       .container .box:nth-child(1) .icon{
         box-shadow: 0 0 0 0 #8DA4D0;
         background: #8DA4D0;
       }
-      
+
       .container .box:nth-child(1):hover .icon{
         box-shadow: 0 0 0 400px #8DA4D0;
       }
-      
+
       .container .box:nth-child(2) .icon{
         box-shadow: 0 0 0 0 #FFBEC3;
         background: #FFBEC3;
       }
-      
+
       .container .box:nth-child(2):hover .icon{
         box-shadow: 0 0 0 400px #FFBEC3;
       }
-      
+
       .container .box .content{
         position: relative;
         z-index: 1;
         transition: 0.5s;
       }
-      
+
       .container .box:hover .content{
         color: #fff;
       }
-      
+
       .container .box .content h3{
         font-size: 20px;
         margin: 10px 0;
         padding: 0;
       }
-      
+
       .container .box .content p{
         margin: 0;
         padding: 0;
       }
-      
+
       a{
         display: inline-block;
         padding: 10px 20px;
@@ -112,25 +120,83 @@
         margin-top: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,.2);
       }
+
+      .root {
+        float: left;
+        width: 1000px;
+      }
+
+      .manual {
+        width: 80px;
+        margin: 0 auto;
+      }
+
+        button{
+        display: inline-block;
+        padding: 5px 10px;
+        background: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #000;
+        font-weight: 500;
+        margin-top: 20px;
+        font-family: sans-serif;
+      }
+
       </style>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
-    <div class="container">
-      <div class="box">
-        <div class="icon"><i class="fa fa-user-md" aria-hidden="true"></i></div>
-        <div class="content">
-          <h3>Doctor</h3>
-          <a href="/html/doctor/writeread.html">Enter</a>
+    <div class="root">
+      <div class="container">
+        <div class="box">
+          <div class="icon"><i class="fa fa-user-md" aria-hidden="true"></i></div>
+          <div class="content">
+            <h3>Doctor</h3>
+            <a href='javascript:void(0);' onclick="enter_doctor(); return false;">Enter</a>
+          </div>
+        </div>
+        <div class="box">
+          <div class="icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></div>
+          <div class="content">
+            <h3>Patient</h3>
+            <a href="/html/patient/writeread.html">Enter</a>
+          </div>
         </div>
       </div>
-      <div class="box">
-        <div class="icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></div>
-        <div class="content">
-          <h3>Patient</h3>
-          <a href="/html/patient/writeread.html">Enter</a>
-        </div>
+      <div class="manual">
+        <button style="background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        background: #03a9f4;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 0px;" onclick="javascript:btn()"> Manual </button>
       </div>
     </div>
   </body>
 </html>
+
+<script>
+  function enter_doctor() {
+    var user_id = document.cookie.split('=')[1];
+    $.ajax({
+      url: "http://133.186.209.224:30001/user/"+user_id, // 클라이언트가 요청을 보낼 서버의 URL 주소            // HTTP 요청과 함께 서버로 보낼 데이터
+			type: "GET",                             // HTTP 요청 방식(GET, POST)
+			fail: () => {
+				console.log('fail');
+			},
+      success: (data) => {
+        var user_role = data[0]['role'];
+        if(user_role==0) {
+          window.location.href = "/html/doctor/writeread.html";
+        } else {
+          swal("의사만 Doctor page에 접근할 수 있습니다.");
+        }
+      }
+    })
+
+  }
+</script>

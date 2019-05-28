@@ -4,7 +4,7 @@
 <HEAD>
 <META NAME="Generator" CONTENT="Hancom HWP 9.6.1.7590">
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Doctor's note</TITLE>
+<TITLE>Hermes</TITLE>
 </HEAD>
 
 <BODY>
@@ -95,9 +95,16 @@
 
 <TR>
 	<TD valign="middle" style='width:315px;height:21px;border-left:none;border-right:none;border-top:dotted #000000 0.4pt;border-bottom:dotted #000000 0.4pt;padding:1.4pt 1.4pt 1.4pt 1.4pt'>
-	<P CLASS=HStyle0 STYLE='margin-right:1.5pt;text-align:right;line-height:170%;'><SPAN STYLE='font-family:"신명 세나루,한컴돋움"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN STYLE='font-family:"신명 세나루,한컴돋움";color:#ffffff'>&nbsp;.</SPAN></P>
+	<P CLASS=HStyle0 STYLE='margin-right:1.5pt;text-align:left;line-height:170%;'><SPAN STYLE='font-family:"신명 세나루,한컴돋움"'  id="block_hash">&nbsp;BlockChain hash value&nbsp;:&nbsp;</SPAN><SPAN STYLE='font-family:"신명 세나루,한컴돋움";color:#ffffff'>&nbsp;.</SPAN></P>
 	</TD>
 </TR>
+
+<TR>
+	<TD valign="middle" style='width:315px;height:21px;border-left:none;border-right:none;border-top:dotted #000000 0.4pt;border-bottom:dotted #000000 0.4pt;padding:1.4pt 1.4pt 1.4pt 1.4pt'>
+	<P CLASS=HStyle0 STYLE='margin-right:1.5pt;text-align:left;line-height:170%;'><SPAN STYLE='font-family:"신명 세나루,한컴돋움"'  id="db_hash">&nbsp;DataBase hash value&nbsp;:&nbsp;</SPAN><SPAN STYLE='font-family:"신명 세나루,한컴돋움";color:#ffffff'>&nbsp;.</SPAN></P>
+	</TD>
+</TR>
+
 </TABLE></P>
 <P CLASS=HStyle0 STYLE='line-height:120%;'></P>
 </div>
@@ -138,10 +145,30 @@
 						console.log('fail');
 					},
 					success: (data) => {
+						var user_gender = '';
+						if(data[0]['gender'] == 0){
+              user_gender = '남자';
+            } else if(data[0]['gender'] == 1) {
+              user_gender = '여자';
+            } else {
+              user_gender = 'X';
+            }
 						console.log(data);
 						text_user_name.appendChild(document.createTextNode(data[0]['name']));
 						text_user_age.appendChild(document.createTextNode(data[0]['age']));
-						text_user_gender.appendChild(document.createTextNode(data[0]['gender']));
+						text_user_gender.appendChild(document.createTextNode(user_gender));
+
+						$.ajax({
+							url: "http://133.186.209.224:30001/records/hash/"+records_id,
+							type: 'GET',
+							fail: () => {
+								console.log('fail');
+							},
+							success: (data) => {
+								document.getElementById('block_hash').appendChild(document.createTextNode(data['block_hash']));
+								document.getElementById('db_hash').appendChild(document.createTextNode(data['db_hash']));
+							}
+						})
 					}
 				})
 			}

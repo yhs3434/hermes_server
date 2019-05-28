@@ -108,13 +108,21 @@ a:active {
           <input type="password" name="password" value="" required="">
           <label>password</label>
         </div>
-        <input type="submit" name="" value="Login">
+        <input type="submit" onclick="submit_clicked();"  name="" value="Login">
       </form>
       <div id="signup">
         <br>
-        <span>If you don't have a ID?</span>
+        <span style="color: white;">If you don't have a ID?</span>
         <a href="http://133.186.209.224:30001/signup" style="padding-left:10px;color=white;">Sign up</a>
       </div>
     </div>
   </body>
 </html>
+
+<script>
+	function submit_clicked() {
+		if (document.cookie != 'undefined') {
+			alert('기존 로그인 세션은 중단됩니다. \n 다중 로그인 하지 말아주세요.');
+		}
+	}
+</script>

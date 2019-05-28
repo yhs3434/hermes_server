@@ -2,7 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Hermes</title>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+  function btn(){
+     //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+     swal("disease 확인 뒤 소견서 출력 페이지로 이동");
+   }
+</script>
 <style type="text/css">
 body{
 margin: 0;
@@ -98,13 +105,13 @@ color: white;
 }
 
 a:link {
-color: white;
+color: blue;
 }
 a:visited {
-color: white;
+color: blue;
 }
 a:active {
-color:white;
+color: blue;
 }
 table {
   width: 100%;
@@ -141,6 +148,22 @@ table.table-style-one {
 		background-color: #ffffff;
 	}
 
+  .root .manual {
+    display: table; margin-left: auto; margin-right: auto;
+  }
+
+    button{
+    display: inline-block;
+    padding: 5px 10px;
+    background: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    margin-top: 20px;
+    font-family: sans-serif;
+  }
+
 </style>
 </head>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -164,13 +187,13 @@ $(function(){
 
           $.each(data,function(key,val){
             var a_tag = '<a href="/html/patient/references.html?rid='+val.id+'">';
-            output +="<tr>";
-            output +="<td width=50 style='word-break:break-all'>"+a_tag+"<span>"+val.id+"</span></a></td>";
+            output +="<tr style='text-align: center;'>";
+            output +="<td width=50 style='word-break:break-all'>"+val.id+"</td>";
             output +="<td width=50 style='word-break:break-all'>"+val.user_id+" "+" </td>";
             output +="<td width=50 style='word-break:break-all'>"+val.doctor_id+" "+" </td>";
-            output +="<td width=50 style='word-break:break-all'>"+val.disease+"  "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+a_tag+"<span>"+val.disease+"</span></a>"+" </td>";
             output +="<td width=50 style='word-break:break-all'>"+val.opinion+"  "+" </td>";
-            output +="<td width=50 style='word-break:break-all'>"+val.regTime+"  "+" </td>";
+            output +="<td width=50 style='word-break:break-all'>"+(new Date(val.regTime)).toLocaleString()+"  "+" </td>";
             output +="</tr>"
           });
           output +="</table>"
@@ -183,10 +206,11 @@ $(function(){
       })
 </script>
 <body>
+  <div class = "root">
   <div class="box">
     <form>
       <input style="margin-left: 320px;" type="button" id="listButton" value="show">
-      <br>
+      <br><br>
       <table class = 'table-style-one'>
         <tr>
           <th width=50 style='word-break:break-all'>num</th>
@@ -200,5 +224,17 @@ $(function(){
       <div id="listDiv" style="color:white; width:100%; height:400px; overflow:auto;"></div>
     </form>
   </div>
+  <div class="manual">
+    <button style="width: auto; height:auto; background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #03a9f4;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 0px;" onclick="javascript:btn()"> Manual </button>
+  </div>
+</div>
 </body>
 </html>

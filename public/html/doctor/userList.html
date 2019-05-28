@@ -2,7 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Hermes</title>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+  function btn(){
+     //alert('wrtite : 소견서 입력\nshow : 소견서 출력');
+     swal("환자의 이름 클릭 시 그 환자의 소견서 입력페이지 이동");
+   }
+</script>
 <style type="text/css">
 body{
 margin: 0;
@@ -104,7 +111,7 @@ a:visited {
 color: blue;
 }
 a:active {
-color:blue;
+color: blue;
 }
 table {
   width: 100%;
@@ -141,6 +148,22 @@ table.table-style-one {
 		background-color: #ffffff;
 	}
 
+  .root .manual {
+    display: table; margin-left: auto; margin-right: auto;
+  }
+
+    button{
+    display: inline-block;
+    padding: 5px 10px;
+    background: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    margin-top: 20px;
+    font-family: sans-serif;
+  }
+
 </style>
 </head>
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -162,12 +185,19 @@ $(function(){
           console.log(data);
 
           $.each(parse_data,function(key,val){
+            var user_gender = '';
+            if(val.gender == 0){
+              user_gender = '남자';
+            } else if(val.gender == 1) {
+              user_gender = '여자';
+            } else {
+              user_gender = 'X';
+            }
             var a_tag = '<a href="/html/doctor/doctorsend.html?uid='+val.id+'">';
             output +="<table class = 'table-style-one'>";
-            output +="<tr>";
-            output +="<td width=50 style='word-break:break-all'>"+a_tag+"<span>"+val.id+"</span></a></td>";
-            output +="<td width=50 style='word-break:break-all'>"+val.name+" "+" </td>";
-            output +="<td width=50 style='word-break:break-all'>"+val.gender+" "+" </td>";
+            output +="<tr style='text-align: center;'>";
+            output +="<td width=50 style='word-break:break-all'>"+a_tag+"<span>"+val.name+"</span></a>"+"</td>";
+            output +="<td width=50 style='word-break:break-all'>"+user_gender+" "+" </td>";
             output +="<td width=50 style='word-break:break-all'>"+val.age+"  "+" </td>";
             output +="</tr>"
             output +="</table>"
@@ -181,23 +211,35 @@ $(function(){
       })
 </script>
 <body>
-  <div class="box">
-    <h2>UserList</h2>
-    <form>
-      <input style="margin-left: 320px;" type="button" id="listButton" value="show">
-      <br>
-      <div>
-        <table class = 'table-style-one'>
-          <tr>
-            <th width=50 style='word-break:break-all'>id</th>
-            <th width=50 style='word-break:break-all'>name</th>
-            <th width=50 style='word-break:break-all'>gender</th>
-            <th width=50 style='word-break:break-all'>age</th>
-          </tr>
-        </table>
-      </div>
-      <div id="listDiv" style="color:white; width:100%; height:300px; overflow:auto;"></div>
-    </form>
+  <div class ="root">
+    <div class="box">
+      <h2>UserList</h2>
+      <form>
+        <input style="margin-left: 320px;" type="button" id="listButton" value="show">
+        <br><br>
+        <div>
+          <table class = 'table-style-one'>
+            <tr>
+              <th width=50 style='word-break:break-all'>name</th>
+              <th width=50 style='word-break:break-all'>gender</th>
+              <th width=50 style='word-break:break-all'>age</th>
+            </tr>
+          </table>
+        </div>
+        <div id="listDiv" style="color:white; width:100%; height:300px; overflow:auto;"></div>
+      </form>
+    </div>
+    <div class="manual">
+      <button style="width: auto; height:auto; background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      background: #03a9f4;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-left: 0px;" onclick="javascript:btn()"> Manual </button>
+    </div>
   </div>
 </body>
 </html>
